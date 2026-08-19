@@ -31,6 +31,7 @@ const mainNav = [
   { to: '/apollo-usage', label: 'Apollo Usage', icon: Database },
   { to: '/users', label: 'All Users', icon: Users },
   { to: '/candidates', label: 'Candidates', icon: UserCheck },
+  { to: '/companies', label: 'Companies', icon: Briefcase },
   { to: '/tests', label: 'Tests', icon: FileText },
   { to: '/access-requests', label: 'Access Request Form', icon: ClipboardCheck },
   { to: '/career-discovery', label: 'Career Discovery', icon: Compass },

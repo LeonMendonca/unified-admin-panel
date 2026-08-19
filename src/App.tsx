@@ -36,6 +36,9 @@ import LookupPage from './pages/lookup/LookupPage';
 import LookupSearchPage from './pages/lookup/LookupSearchPage';
 import LookupCompanyDetail from './pages/lookup/LookupCompanyDetail';
 import LookupOrgChart from './pages/lookup/LookupOrgChart';
+import CompaniesListPage from './pages/companies/CompaniesListPage';
+import CompanyDetailPage from './pages/companies/CompanyDetailPage';
+import CompanyJobsPage from './pages/companies/CompanyJobsPage';
 import AIDetectionPage from './pages/ai-detection/AIDetectionPage';
 import WhatsAppIntakePage from './pages/whatsapp-intake/WhatsAppIntakePage';
 import AccessRequestPage from './pages/access-requests/AccessRequestPage';
@@ -64,6 +67,9 @@ function App() {
         <Route path="/settings" element={<GeneralSettingsPage />} />
         <Route path="/credit-settings" element={<CreditSettingsPage />} />
         <Route path="/lookup" element={<LookupPage />} />
+        <Route path="/companies" element={<CompaniesListPage />} />
+        <Route path="/companies/:id" element={<CompanyDetailPage />} />
+        <Route path="/companies/:id/jobs" element={<CompanyJobsPage />} />
         <Route path="/lookup/search" element={<LookupSearchPage />} />
         <Route path="/lookup/company/:id" element={<LookupCompanyDetail />} />
         <Route path="/lookup/company/:id/org-chart" element={<LookupOrgChart />} />
