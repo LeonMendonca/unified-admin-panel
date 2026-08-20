@@ -211,16 +211,33 @@ export const mockCompanies: Company[] = [
 
 export interface CompanyJob {
   id: string;
+  companyId: string;
   title: string;
   vertical: string;
   locations: string;
   applications: number;
   hired: number;
   postedOn: string;
+  status: 'Active' | 'Past' | 'Draft';
+  source: 'Campus' | 'General';
 }
 
 export const mockCompanyJobs: CompanyJob[] = [
-  { id: 'cj_1', title: 'Full Stack Developer - Python', vertical: 'Coding', locations: 'Mumbai', applications: 2, hired: 1, postedOn: '22 Apr 2026' },
-  { id: 'cj_2', title: 'Full Stack Developer - MERN', vertical: 'Coding', locations: 'Mumbai', applications: 0, hired: 1, postedOn: '22 Apr 2026' },
-  { id: 'cj_3', title: 'Chief Of Staff - Strategy & Growth (Founder\'s Office)', vertical: 'Founder\'s Office', locations: 'Mumbai', applications: 5, hired: 1, postedOn: '22 Apr 2026' },
+  // comp_1 — 1minfootball (campus-linked)
+  { id: 'cj_1', companyId: 'comp_1', title: 'Social Media Intern', vertical: 'Content Creation', locations: 'Mumbai Suburban', applications: 2, hired: 1, postedOn: '22 Apr 2026', status: 'Past', source: 'Campus' },
+  { id: 'cj_2', companyId: 'comp_1', title: 'Merchandise Designer', vertical: 'Creative Merchandising', locations: 'Mumbai Suburban', applications: 2, hired: 1, postedOn: '22 Apr 2026', status: 'Past', source: 'Campus' },
+  { id: 'cj_3', companyId: 'comp_1', title: 'Backend Engineer Intern', vertical: 'Engineering', locations: 'Remote', applications: 14, hired: 0, postedOn: '10 Jun 2026', status: 'Active', source: 'General' },
+
+  // comp_2 — Shakti Legal Compliance India (no campus verticals, general jobs only)
+  { id: 'cj_4', companyId: 'comp_2', title: 'Legal Associate', vertical: 'Legal', locations: 'Ahmedabad', applications: 6, hired: 0, postedOn: '02 Jul 2026', status: 'Active', source: 'General' },
+  { id: 'cj_5', companyId: 'comp_2', title: 'Compliance Analyst', vertical: 'Compliance', locations: 'Ahmedabad', applications: 3, hired: 1, postedOn: '18 May 2026', status: 'Past', source: 'General' },
+
+  // comp_3 — Aiolos Cloud Solutions (campus-linked)
+  { id: 'cj_6', companyId: 'comp_3', title: 'Full Stack Developer - Python', vertical: 'Coding', locations: 'Mumbai', applications: 2, hired: 1, postedOn: '22 Apr 2026', status: 'Past', source: 'Campus' },
+  { id: 'cj_7', companyId: 'comp_3', title: 'Full Stack Developer - MERN', vertical: 'Coding', locations: 'Mumbai', applications: 0, hired: 1, postedOn: '22 Apr 2026', status: 'Active', source: 'Campus' },
+  { id: 'cj_8', companyId: 'comp_3', title: "Chief Of Staff - Strategy & Growth (Founder's Office)", vertical: "Founder's Office", locations: 'Mumbai', applications: 5, hired: 1, postedOn: '22 Apr 2026', status: 'Active', source: 'Campus' },
+  { id: 'cj_9', companyId: 'comp_3', title: 'DevOps Engineer', vertical: 'Infrastructure', locations: 'Bengaluru', applications: 9, hired: 0, postedOn: '30 Jul 2026', status: 'Draft', source: 'General' },
+
+  // comp_4 — ABC Pvt. Ltd. (not campus-linked, general jobs only)
+  { id: 'cj_10', companyId: 'comp_4', title: 'Operations Executive', vertical: 'Operations', locations: 'Delhi', applications: 1, hired: 0, postedOn: '14 Aug 2026', status: 'Draft', source: 'General' },
 ];

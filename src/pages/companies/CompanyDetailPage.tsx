@@ -1,13 +1,22 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Building2, ChevronDown, ChevronUp } from 'lucide-react';
-import { mockCompanies } from '../../data/companyData';
+import { mockCompanies, mockCompanyJobs } from '../../data/companyData';
 import { Card } from '../../components/ui';
 
 export default function CompanyDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const company = mockCompanies.find(c => c.id === id) || mockCompanies[0];
+  const companyJobs = mockCompanyJobs.filter((j) => j.companyId === company.id);
+  const jobStats = {
+    total: companyJobs.length,
+    active: companyJobs.filter((j) => j.status === 'Active').length,
+    closed: companyJobs.filter((j) => j.status === 'Past').length,
+    drafts: companyJobs.filter((j) => j.status === 'Draft').length,
+    candidatesAssessed: companyJobs.reduce((sum, j) => sum + j.applications, 0),
+    candidatesHired: companyJobs.reduce((sum, j) => sum + j.hired, 0),
+  };
 
   const [openSections, setOpenSections] = useState({
     contact: true,
@@ -330,46 +339,46 @@ export default function CompanyDetailPage() {
 
       {/* Right Sidebar */}
       <div className="w-[300px] shrink-0">
-        {/* <h3 className="text-[#f97316] font-bold mb-4">Company stats & Updates</h3>
-        
+        <h3 className="text-[#f97316] font-bold mb-4">Company stats & Updates</h3>
+
         <Card className="p-5 border border-gray-100 shadow-sm rounded-xl bg-white flex flex-col gap-4">
           <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
             <span className="text-sm font-semibold text-gray-900">Total Jobs Posted</span>
-            <span className="text-2xl font-black text-[#f97316]">{company.campusJobsPosted}</span>
+            <span className="text-2xl font-black text-[#f97316]">{jobStats.total}</span>
           </div>
-          
+
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-[#f0f4f8] rounded-xl p-3 flex flex-col justify-center">
               <span className="text-xs font-medium text-gray-900 mb-1">Active</span>
-              <span className="text-xl font-medium text-teal-600">0</span>
+              <span className="text-xl font-medium text-teal-600">{jobStats.active}</span>
             </div>
             <div className="bg-gray-50 rounded-xl p-3 flex flex-col justify-center">
               <span className="text-xs font-medium text-gray-900 mb-1">Closed</span>
-              <span className="text-xl font-medium text-gray-600">3</span>
+              <span className="text-xl font-medium text-gray-600">{jobStats.closed}</span>
             </div>
             <div className="bg-gray-50 rounded-xl p-3 flex flex-col justify-center">
               <span className="text-xs font-medium text-gray-900 mb-1">Drafts</span>
-              <span className="text-xl font-medium text-gray-600">0</span>
+              <span className="text-xl font-medium text-gray-600">{jobStats.drafts}</span>
             </div>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between mt-2">
             <span className="text-sm font-medium text-gray-900">Candidates Assessed</span>
-            <span className="text-xl font-black text-[#f97316]">0</span>
+            <span className="text-xl font-black text-[#f97316]">{jobStats.candidatesAssessed}</span>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-900">Candidates Hired</span>
-            <span className="text-xl font-black text-teal-600">0</span>
+            <span className="text-xl font-black text-teal-600">{jobStats.candidatesHired}</span>
           </div>
 
-          <button 
+          <button
             onClick={() => navigate(`/companies/${company.id}/jobs`)}
             className="w-full bg-[#003865] text-white font-bold py-3 rounded-lg hover:bg-[#002848] transition-colors mt-2"
           >
             View Jobs
           </button>
-        </Card> */}
+        </Card>
         <Card className="p-5 border border-gray-100 shadow-sm rounded-xl bg-white flex flex-col gap-4">
           <button className="w-full bg-white border border-[#003865] text-[#003865] font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">
             Preview Company Page
