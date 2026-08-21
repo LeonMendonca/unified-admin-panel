@@ -99,10 +99,18 @@ export default function HRDetail() {
                   </Badge>
                   {hr.campusAccessGrant.activeUntil && <span className="text-xs text-gray-500">until {hr.campusAccessGrant.activeUntil}</span>}
                 </div>
-                {hr.campusAccessGrant.reason && <p className="text-xs text-gray-500 mt-2">Reason: {hr.campusAccessGrant.reason}</p>}
-                <div className="flex gap-2 mt-3">
-                  <Button size="sm">Grant</Button>
-                  <Button size="sm" variant="secondary">Revoke</Button>
+                {/* {hr.campusAccessGrant.reason && <p className="text-xs text-gray-500 mt-2">Reason: {hr.campusAccessGrant.reason}</p>} */}
+
+                <p className="text-xs text-gray-500 mt-3 mb-3">
+                  Comp toggle bypasses the {campusAccessPackage.credits}-credit "{campusAccessPackage.name}" package charge. Use for support, trials, or partner accounts. Every action requires a reason and is recorded in the activity log.
+                </p>
+
+                <div className="flex gap-2">
+                  {hr.campusAccessGrant.state === 'Active' ? (
+                    <Button variant="danger" size="sm">Revoke access</Button>
+                  ) : (
+                    <Button size="sm">Grant comp access ({campusAccessPackage.periodDays} days)</Button>
+                  )}
                 </div>
               </div>
             </Card>
@@ -171,27 +179,7 @@ export default function HRDetail() {
               )}
             </Card>
 
-            <Card className="p-4">
-              <SectionTitle>Campus Access (admin override)</SectionTitle>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs text-gray-500">Status:</span>
-                {hr.campusAccessGrant.state === 'Active' ? (
-                  <Badge tone="green">Active until {hr.campusAccessGrant.activeUntil}</Badge>
-                ) : (
-                  <>
-                    <Badge>{hr.campusAccessGrant.state === 'Off' ? 'Off' : 'Not company-approved'}</Badge>
-                  </>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mb-3">
-                Comp toggle bypasses the {campusAccessPackage.credits}-credit "{campusAccessPackage.name}" package charge. Use for support, trials, or partner accounts. Every action requires a reason and is recorded in the activity log.
-              </p>
-              {hr.campusAccessGrant.state === 'Active' ? (
-                <Button variant="danger">Revoke access</Button>
-              ) : (
-                <Button>Grant comp access ({campusAccessPackage.periodDays} days)</Button>
-              )}
-            </Card>
+
           </div>
         )}
       </div>

@@ -7,6 +7,8 @@ import { Badge, Card, SectionTitle, Button, EmptyState, Toggle, Tabs } from '../
 import Accordion from '../../components/Accordion';
 import AddTpoModal from '../users/AddTpoModal';
 import AddStudentModal from '../users/AddStudentModal';
+import AddProgramModal from './AddProgramModal';
+import CollegeAnalyticsModal from './CollegeAnalyticsModal';
 
 type View = 'overview' | 'batches' | { batch: Batch };
 
@@ -16,9 +18,14 @@ export default function CollegeDetail() {
   const [view, setView] = useState<View>('overview');
   const [tpoModal, setTpoModal] = useState<{ open: boolean; tpo?: TPO }>({ open: false });
   const [addStudentsOpen, setAddStudentsOpen] = useState(false);
+  const [addProgramOpen, setAddProgramOpen] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [batchOverrides, setBatchOverrides] = useState<Record<string, { deactivated?: boolean; deleted?: boolean }>>({});
   const [recognition, setRecognition] = useState(college?.officialRecognition);
   const [regTab, setRegTab] = useState<'Registered' | 'Not Registered'>('Registered');
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState(college || ({} as any));
 
   if (!college) return <EmptyState label="College not found" />;
   if (!recognition) return null;
@@ -59,29 +66,32 @@ export default function CollegeDetail() {
           <div className="col-span-2 space-y-4">
             <Accordion title="Basic Information">
               <dl className="grid grid-cols-2 gap-3 text-sm">
-                <div><dt className="text-gray-500">College Name</dt><dd className="font-medium text-gray-800">{college.name}</dd></div>
-                <div><dt className="text-gray-500">College Code</dt><dd className="font-medium text-gray-800">{college.code}</dd></div>
-                <div><dt className="text-gray-500">Official Website URL</dt><dd className="font-medium text-gray-800">{college.websiteUrl}</dd></div>
-                <div><dt className="text-gray-500">Pin code</dt><dd className="font-medium text-gray-800">{college.pincode}</dd></div>
-                <div><dt className="text-gray-500">City, State</dt><dd className="font-medium text-gray-800">{college.city}, {college.state}</dd></div>
-                <div><dt className="text-gray-500">Address Line 1</dt><dd className="font-medium text-gray-800">{college.addressLine1}</dd></div>
+                <EditableField label="College Name" value={editForm.name} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, name: v })} />
+                <EditableField label="College Code" value={editForm.code} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, code: v })} />
+                <EditableField label="Official Website URL" value={editForm.websiteUrl} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, websiteUrl: v })} />
+                <EditableField label="Pin code" value={editForm.pincode} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, pincode: v })} />
+                <EditableField label="City" value={editForm.city} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, city: v })} />
+                <EditableField label="State" value={editForm.state} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, state: v })} />
+                <div className="col-span-2">
+                  <EditableField label="Address Line 1" value={editForm.addressLine1} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, addressLine1: v })} />
+                </div>
               </dl>
             </Accordion>
 
             <Accordion title="Contact Information">
               <dl className="grid grid-cols-2 gap-3 text-sm">
-                <div><dt className="text-gray-500">Contact No.</dt><dd className="font-medium text-gray-800">{college.contactPhone}</dd></div>
-                <div><dt className="text-gray-500">Email</dt><dd className="font-medium text-gray-800">{college.contactEmail}</dd></div>
-                <div><dt className="text-gray-500">Contact Person</dt><dd className="font-medium text-gray-800">{college.contactPerson}</dd></div>
-                <div><dt className="text-gray-500">Alternate Contact No.</dt><dd className="font-medium text-gray-800">{college.alternateContactPhone || '—'}</dd></div>
+                <EditableField label="Contact No." value={editForm.contactPhone} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, contactPhone: v })} />
+                <EditableField label="Email" value={editForm.contactEmail} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, contactEmail: v })} />
+                <EditableField label="Contact Person" value={editForm.contactPerson} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, contactPerson: v })} />
+                <EditableField label="Alternate Contact No." value={editForm.alternateContactPhone || ''} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, alternateContactPhone: v })} />
               </dl>
             </Accordion>
 
             <Accordion title="Administrative Details">
               <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                <div><dt className="text-gray-500">Type of Institution</dt><dd className="font-medium text-gray-800">{college.institutionType}</dd></div>
-                <div><dt className="text-gray-500">Total Student Enrollment</dt><dd className="font-medium text-gray-800">{college.enrollment}</dd></div>
-                <div><dt className="text-gray-500">Tier</dt><dd className="font-medium text-gray-800">{college.tier}</dd></div>
+                <EditableField label="Type of Institution" value={editForm.institutionType} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, institutionType: v })} />
+                <EditableField label="Total Student Enrollment" value={editForm.enrollment?.toString()} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, enrollment: v })} />
+                <EditableField label="Tier" value={editForm.tier} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, tier: v })} />
               </div>
               <p className="text-xs text-gray-500 mb-2">Official recognition</p>
               <div className="space-y-2">
@@ -100,15 +110,16 @@ export default function CollegeDetail() {
             </Accordion>
 
             <Accordion title="Placement Details">
-              <div className="grid grid-cols-4 gap-3 text-sm">
-                <div><dt className="text-gray-500">Average Package</dt><dd className="font-medium text-gray-800">{college.avgPackage}</dd></div>
-                <div><dt className="text-gray-500">Highest Package</dt><dd className="font-medium text-gray-800">{college.highestPackage}</dd></div>
-                <div><dt className="text-gray-500">Placement Rate</dt><dd className="font-medium text-gray-800">{college.placementRate}%</dd></div>
-                <div><dt className="text-gray-500">Active Jobs</dt><dd className="font-medium text-gray-800">{college.activeJobs}</dd></div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <EditableField label="Average Package" value={editForm.avgPackage} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, avgPackage: v })} />
+                <EditableField label="Highest Package" value={editForm.highestPackage} isEditing={isEditing} onChange={(v) => setEditForm({ ...editForm, highestPackage: v })} />
               </div>
             </Accordion>
 
-            <Accordion title="Programs">
+            <Accordion
+              title="Programs"
+              action={<button onClick={() => setAddProgramOpen(true)} className="bg-purple-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-purple-700">Add Program</button>}
+            >
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
@@ -138,7 +149,14 @@ export default function CollegeDetail() {
 
           <div className="space-y-4">
             <Card className="p-3 space-y-2">
-              <Button className="w-full text-center block">Edit College Details</Button>
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <Button variant="secondary" className="w-full text-center block" onClick={() => { setIsEditing(false); setEditForm(college as any); }}>Cancel</Button>
+                  <Button className="w-full text-center block" onClick={() => setIsEditing(false)}>Save Changes</Button>
+                </div>
+              ) : (
+                <Button className="w-full text-center block" onClick={() => setIsEditing(true)}>Edit College Details</Button>
+              )}
               <Button variant="secondary" className="w-full text-center block">Autofill from Web</Button>
               <Button variant="secondary" className="w-full text-center block">Preview College Page</Button>
               <button
@@ -161,13 +179,12 @@ export default function CollegeDetail() {
 
             <Card className="p-4">
               <SectionTitle>Overview (Talent)</SectionTitle>
-              <div className="grid grid-cols-3 gap-2 text-center mb-3">
+              <div className="grid grid-cols-2 gap-2 text-center mb-3">
                 <div><p className="text-lg font-bold text-gray-900">{college.totalStudents}</p><p className="text-xs text-gray-500">Students</p></div>
                 <div><p className="text-lg font-bold text-gray-900">{collegeTpos.length}</p><p className="text-xs text-gray-500">TPO Users</p></div>
-                <div><p className="text-lg font-bold text-gray-900">{college.activeTests}</p><p className="text-xs text-gray-500">Active Tests</p></div>
               </div>
               <div className="flex gap-2">
-                <Button variant="secondary" size="sm" className="flex-1 text-center">View Analytics</Button>
+                <Button variant="secondary" size="sm" className="flex-1 text-center" onClick={() => setAnalyticsOpen(true)}>View Analytics</Button>
                 <Button variant="secondary" size="sm" className="flex-1 text-center">Student List</Button>
               </div>
             </Card>
@@ -227,7 +244,7 @@ export default function CollegeDetail() {
                       <Badge tone="blue">{b.programLevel}</Badge>
                     </div>
                     <BatchMenu
-                      onEdit={() => {}}
+                      onEdit={() => { }}
                       onDeactivate={() => setBatchOverrides((prev) => ({ ...prev, [b.id]: { ...prev[b.id], deactivated: !deactivated } }))}
                       onDelete={() => setBatchOverrides((prev) => ({ ...prev, [b.id]: { ...prev[b.id], deleted: true } }))}
                       deactivated={deactivated}
@@ -265,6 +282,8 @@ export default function CollegeDetail() {
 
       {tpoModal.open && <AddTpoModal tpo={tpoModal.tpo} onClose={() => setTpoModal({ open: false })} />}
       {addStudentsOpen && <AddStudentModal onClose={() => setAddStudentsOpen(false)} />}
+      {addProgramOpen && <AddProgramModal onClose={() => setAddProgramOpen(false)} />}
+      {analyticsOpen && <CollegeAnalyticsModal collegeName={college.name} onClose={() => setAnalyticsOpen(false)} />}
     </div>
   );
 }
@@ -354,5 +373,35 @@ function BatchDetail({
         )}
       </div>
     </Card>
+  );
+}
+
+function EditableField({
+  label,
+  value,
+  isEditing,
+  onChange
+}: {
+  label: string;
+  value: string;
+  isEditing: boolean;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <dt className="text-gray-500">{label}</dt>
+      <dd className="font-medium text-gray-800">
+        {isEditing ? (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-2 py-1 mt-1 bg-white border border-gray-300 rounded focus:outline-none focus:border-purple-500 shadow-sm text-sm font-normal text-gray-700"
+          />
+        ) : (
+          value
+        )}
+      </dd>
+    </div>
   );
 }
